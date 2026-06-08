@@ -1,0 +1,1 @@
+{"compilerOptions":{"target":"ES2022","module":"commonjs","strict":true,"esModuleInterop":true,"skipLibCheck":true,"outDir":"dist"},"include":["tests/**/*.ts","scripts/**/*.ts","wrappers/**/*.ts","jest.config.ts","tact.config.ts"]}

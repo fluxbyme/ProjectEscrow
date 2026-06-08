@@ -1,0 +1,38 @@
+{
+  "name": "@escrow/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsc -p tsconfig.json && node scripts/finalize-build.cjs",
+    "start": "node dist/apps/backend/src/main.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.0.0",
+    "@ton/core": "^0.63.0",
+    "@ton/crypto": "^3.3.0",
+    "@ton/ton": "^16.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "express": "^5.0.0",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^8.0.0",
+    "pino": "^9.0.0",
+    "pino-http": "^10.0.0",
+    "telegraf": "^4.16.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "prisma": "^6.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

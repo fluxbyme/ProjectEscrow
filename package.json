@@ -1,0 +1,15 @@
+{
+  "name": "telegram-ton-escrow",
+  "private": true,
+  "workspaces": ["apps/*", "contracts/*"],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "dev:backend": "npm run dev -w @escrow/backend",
+    "dev:miniapp": "npm run dev -w @escrow/miniapp",
+    "db:generate": "npm run prisma:generate -w @escrow/backend",
+    "db:migrate": "npm run prisma:migrate -w @escrow/backend"
+  },
+  "engines": { "node": ">=20" }
+}

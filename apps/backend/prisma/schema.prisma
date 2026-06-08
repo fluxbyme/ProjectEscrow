@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum DealCurrency {
+  TON
+  USDT
+}
+
+enum DealStatus {
+  CREATED
+  WAITING_DEPOSIT
+  FUNDED
+  DELIVERED
+  DISPUTED
+  RELEASED
+  REFUNDED
+  EXPIRED
+  CANCELLED
+}
+
+enum EvidenceKind {
+  DELIVERY
+  DISPUTE
+}
+
+model User {
+  id            String   @id @default(cuid())
+  telegramId    BigInt   @unique @map("telegram_id")
+  username      String?
+  walletAddress String?  @map("wallet_address")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  buyerDeals    Deal[]   @relation("BuyerDeals")
+  sellerDeals   Deal[]   @relation("SellerDeals")
+
+  @@map("users")
+}
+
+model DealEvidence {
+  id                 String       @id @default(cuid())
+  dealId             String       @map("deal_id")
+  uploaderTelegramId BigInt       @map("uploader_telegram_id")
+  kind               EvidenceKind
+  filename           String
+  mimeType           String       @map("mime_type")
+  storageKey         String       @map("storage_key")
+  sha256             String
+  createdAt          DateTime     @default(now()) @map("created_at")
+  deal               Deal         @relation(fields: [dealId], references: [id], onDelete: Cascade)
+
+  @@index([dealId, kind])
+  @@map("deal_evidence")
+}
+
+model Deal {
+  id                      String     @id @default(cuid())
+  dealCode                String     @unique @map("deal_code")
+  buyerTelegramId         BigInt     @map("buyer_telegram_id")
+  sellerTelegramId        BigInt     @map("seller_telegram_id")
+  buyerWallet             String?    @map("buyer_wallet")
+  sellerWallet            String?    @map("seller_wallet")
+  escrowAddress           String?    @map("escrow_address")
+  amountNano              BigInt     @map("amount_nano")
+  currency                DealCurrency @default(TON)
+  tokenAddress            String?    @map("token_address")
+  description             String
+  status                  DealStatus @default(WAITING_DEPOSIT)
+  evidenceHash            String?    @map("evidence_hash")
+  deliveryProof           String?    @map("delivery_proof")
+  disputeReason           String?    @map("dispute_reason")
+  disputeEvidence         String?    @map("dispute_evidence")
+  resolutionNote          String?    @map("resolution_note")
+  txHashDeposit           String?    @map("tx_hash_deposit")
+  txHashRelease           String?    @map("tx_hash_release")
+  txHashRefund            String?    @map("tx_hash_refund")
+  chainLt                  BigInt?    @map("chain_lt")
+  createdAt               DateTime   @default(now()) @map("created_at")
+  updatedAt               DateTime   @updatedAt @map("updated_at")
+  acceptanceDeadlineAt    DateTime   @map("acceptance_deadline_at")
+  acceptedAt              DateTime?  @map("accepted_at")
+  depositDeadlineAt       DateTime?  @map("deposit_deadline_at")
+  deliveryDeadlineAt      DateTime?  @map("delivery_deadline_at")
+  deliveryTimeoutSeconds  Int        @map("delivery_timeout_seconds")
+  actionDeadlineAt        DateTime?  @map("action_deadline_at")
+  lastReminderKey         String?    @map("last_reminder_key")
+  timeoutRequestedAt      DateTime?  @map("timeout_requested_at")
+  buyer                    User       @relation("BuyerDeals", fields: [buyerTelegramId], references: [telegramId])
+  seller                   User       @relation("SellerDeals", fields: [sellerTelegramId], references: [telegramId])
+  evidences                DealEvidence[]
+
+  @@index([buyerTelegramId, status])
+  @@index([sellerTelegramId, status])
+  @@index([escrowAddress])
+  @@index([status, actionDeadlineAt])
+  @@map("deals")
+}

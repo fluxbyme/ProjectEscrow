@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.next/
+.env
+.env.*
+!.env.example
+coverage/
+*.log
+*.tsbuildinfo
+apps/miniapp/vite.config.js
+apps/miniapp/vite.config.d.ts
+.DS_Store
+apps/backend/storage/
+contracts/escrow/build/
+contracts/escrow/temp/
